@@ -29,7 +29,7 @@ export class Pokemon {
 
 //FUNCTION: retrieves, destructures, stores and sets types in an asyncronous way results from the API.
 export const getPokemon = async (n: number) => {
-	let pokemonNames = [];
+	let pokemonData = [];
 	for (let i = 0; i < n; i++) {
 		let pokemonIndex: number = getRandomInt(1, 1010);
 		let response = await fetch(`${apiurl}${pokemonIndex}`);
@@ -61,7 +61,7 @@ export const getPokemon = async (n: number) => {
 		let typeNames = types.map((x: any) => capitalizeFirstLetter(x.type.name));
 		let movesNames = moves.map((x: any) => capitalizeFirstLetter(x.move.name));
 		let statsNumbers = stats.map((x: any) => x.base_stat);
-		pokemonNames.push(
+		pokemonData.push(
 			new Pokemon(
 				capitalizeFirstLetter(name),
 				id,
@@ -73,5 +73,5 @@ export const getPokemon = async (n: number) => {
 			)
 		);
 	}
-	return pokemonNames;
+	return pokemonData;
 };
