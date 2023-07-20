@@ -1,4 +1,4 @@
-import { Pokemon } from "./pokemons.js";
+/*import { Pokemon } from "./pokemons.js";
 
 const head = (title: string) => `
 <head>
@@ -47,3 +47,4 @@ export const buildPage = (Pokemon: Array<Pokemon>) => {
       </body>
     </html>`;
 };
+*/
