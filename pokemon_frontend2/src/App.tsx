@@ -6,7 +6,7 @@ function App() {
 	const [pokemonData, setPokemonData] = useState<Pokemon[] | null>(null);
 
 	useEffect(() => {
-		getPokemon(5).then((pokemonData) => setPokemonData(pokemonData));
+		getPokemon(10).then((pokemonData) => setPokemonData(pokemonData));
 	}, []);
 
 	if (pokemonData === null) {
@@ -15,12 +15,15 @@ function App() {
 
 	return (
 		<>
-			{pokemonData.map((pokemon) => (
-				<div className="bubble">
-					<div>{pokemon.name}</div>
-					<div>{pokemon.id}</div>
-				</div>
-			))}
+			<div className="mainPage">
+				{pokemonData.map((pokemon) => (
+					<div className="bubble">
+						<div>{pokemon.name}</div>
+						<img src={pokemon.picture} alt={pokemon.name} />
+						<div>{pokemon.id}</div>
+					</div>
+				))}
+			</div>
 		</>
 	);
 }
