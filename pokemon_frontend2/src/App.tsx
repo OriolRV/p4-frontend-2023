@@ -20,7 +20,7 @@ function App() {
 	if (pokemonData === null) {
 		return (
 			<Routes>
-				<Route path="/" element={<div>Retrieving data</div>} />
+				<Route path="/" element={<Loading />} />
 			</Routes>
 		);
 	}
@@ -29,22 +29,7 @@ function App() {
 		<>
 			<header> MyHeader </header>
 			<Routes>
-				<Route
-					path="/all/"
-					element={
-						<>
-							<div className="mainPage">
-								{pokemonData.map((pokemon) => (
-									<div className="bubble">
-										<div>{pokemon.name}</div>
-										<img src={pokemon.picture} alt={pokemon.name} />
-										<div>{pokemon.id}</div>
-									</div>
-								))}
-							</div>
-						</>
-					}
-				>
+				<Route path="/all/*" element={<All data={pokemonData} />}>
 					<Route path=":id" element={<IndividualPage />}></Route>
 				</Route>
 			</Routes>
@@ -54,6 +39,35 @@ function App() {
 }
 
 export default App;
+
+function Loading() {
+	return (
+		<>
+			<p>Retrieving data...</p>
+			<img
+				className="spinningPokeball"
+				src="../public/assets/Poké_Ball_icon.svg.png"
+				alt="spinning pokeball"
+			></img>
+		</>
+	);
+}
+
+function All({ data }: { data: Pokemon[] }) {
+	return (
+		<>
+			<div className="mainPage">
+				{data.map((pokemon) => (
+					<div className="bubble">
+						<div>{pokemon.name}</div>
+						<img src={pokemon.picture} alt={pokemon.name} />
+						<div>{pokemon.id}</div>
+					</div>
+				))}
+			</div>
+		</>
+	);
+}
 
 function IndividualPage() {
 	const { id } = useParams();
