@@ -33,8 +33,11 @@ function App() {
 		<>
 			<header> MyHeader </header>
 			<Routes>
-				<Route path="/all/*" element={<All data={pokemonData} />}></Route>
-				<Route path="/all/:id" element={<IndividualPage />}></Route>
+				<Route path="/all/" element={<All data={pokemonData} />}></Route>
+				<Route
+					path="/all/:id"
+					element={<IndividualPage data={pokemonData} />}
+				></Route>
 			</Routes>
 			<footer> MyFooter </footer>
 		</>
@@ -75,62 +78,22 @@ function All({ data }: { data: Pokemon[] }) {
 	);
 }
 
-function IndividualPage() {
-	const { id } = useParams();
-	return <div>{id}</div>;
-}
+function IndividualPage({ data }: { data: Pokemon[] }) {
+	const id = Number(useParams().id);
 
-/*export default function App() {
+	const pokemon = data.find((pokemon) => pokemon.id === id);
+
+	if (!pokemon) {
+		return <div>Pokemon not found</div>;
+	}
+
 	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<h1> Home </h1>} />
-				<Route path="users/*" element={<Users />} />
-			</Routes>
-		</BrowserRouter>
+		<>
+			<div>
+				<h1>{pokemon.name}</h1>
+				<img src={pokemon.picture} alt={pokemon.name} />
+				<div>ID: {pokemon.id}</div>
+			</div>
+		</>
 	);
 }
-
-function Users() {
-	return (
-		<div>
-			<nav>
-				{" "}
-				<Link to="me"> My Profile </Link>{" "}
-			</nav>
-			<nav>
-				{" "}
-				<Link to="/"> Home </Link>{" "}
-			</nav>
-			<Routes>
-				<Route path="you" element={<h1> You </h1>} />
-				<Route path="me" element={<h1> Me </h1>} />
-			</Routes>
-		</div>
-	);
-}*/
-
-/*
-
-		<Route path="/" element={<h1> Home </h1>} />
-*/
-
-/*import { writeFile } from "fs/promises";
-import { buildPage } from "./createHTML.js";
-import { buildIndividualPage } from "./createIndividualHTML.js";
-
-const PokemonObj = await getPokemon(100);
-const PokemonHtml = buildPage(PokemonObj);
-await writeFile("pokemon.html", PokemonHtml);
-
-for (const monster of PokemonObj) {
-	let miniPage = buildIndividualPage(monster);
-	await writeFile(`${monster.name}.html`, miniPage);
-}
-
-
-
-function App() {
-
-  
-} */
