@@ -4,17 +4,21 @@ import { Pokemon, getPokemon } from "./getPokemonData";
 import {
 	Routes,
 	Route,
-	Outlet,
 	Link,
+	Outlet,
 	useNavigate,
 	useParams,
 } from "react-router-dom";
 
 function App() {
 	const [pokemonData, setPokemonData] = useState<Pokemon[] | null>(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		getPokemon(100).then((pokemonData) => setPokemonData(pokemonData));
+		getPokemon(20).then((pokemonData) => {
+			setPokemonData(pokemonData);
+			navigate("/all");
+		});
 	}, []);
 
 	if (pokemonData === null) {
@@ -29,9 +33,8 @@ function App() {
 		<>
 			<header> MyHeader </header>
 			<Routes>
-				<Route path="/all/*" element={<All data={pokemonData} />}>
-					<Route path=":id" element={<IndividualPage />}></Route>
-				</Route>
+				<Route path="/all/*" element={<All data={pokemonData} />}></Route>
+				<Route path="/all/:id" element={<IndividualPage />}></Route>
 			</Routes>
 			<footer> MyFooter </footer>
 		</>
@@ -58,13 +61,16 @@ function All({ data }: { data: Pokemon[] }) {
 		<>
 			<div className="mainPage">
 				{data.map((pokemon) => (
-					<div className="bubble">
-						<div>{pokemon.name}</div>
-						<img src={pokemon.picture} alt={pokemon.name} />
-						<div>{pokemon.id}</div>
-					</div>
+					<Link to={`/all/${pokemon.id}`} key={pokemon.id}>
+						<div className="bubble">
+							<div>{pokemon.name}</div>
+							<img src={pokemon.picture} alt={pokemon.name} />
+							<div>{pokemon.id}</div>
+						</div>
+					</Link>
 				))}
 			</div>
+			<Outlet />
 		</>
 	);
 }
