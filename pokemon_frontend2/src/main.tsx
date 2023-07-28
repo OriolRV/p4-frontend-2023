@@ -6,8 +6,14 @@ import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
+		<header>
+			<img src="../public/assets/Pokédex_logo.png" alt="pokédex logo"></img>
+		</header>
 		<BrowserRouter>
 			<App />
 		</BrowserRouter>
+		<footer>
+			<img src="../public/assets/Pokédex_logo.png" alt="pokédex logo"></img>
+		</footer>
 	</React.StrictMode>
 );

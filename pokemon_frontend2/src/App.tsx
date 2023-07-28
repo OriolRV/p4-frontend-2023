@@ -31,7 +31,6 @@ function App() {
 
 	return (
 		<>
-			<header> MyHeader </header>
 			<Routes>
 				<Route path="/all/" element={<All data={pokemonData} />}></Route>
 				<Route
@@ -39,7 +38,6 @@ function App() {
 					element={<IndividualPage data={pokemonData} />}
 				></Route>
 			</Routes>
-			<footer> MyFooter </footer>
 		</>
 	);
 }
