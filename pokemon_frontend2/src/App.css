@@ -4,6 +4,7 @@
 	padding: 2rem;
 	text-align: center;
 	box-sizing: border-box;
+	background-color: rgb(152, 252, 121);
 }
 
 .bubble {
@@ -19,12 +20,14 @@
 	background-image: url(../public/assets/Poké_Ball_icon.svg.png);
 	background-position: center center;
 	margin: 1rem;
+	color: black;
 }
 
 .mainPage {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
+	justify-content: center;
 }
 
 img {
