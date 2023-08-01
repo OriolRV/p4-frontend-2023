@@ -31,18 +31,32 @@ function App() {
 
 	return (
 		<>
+			<div className="navigation">
+				{Array.from({ length: 8 }, (_, index) => index + 1).map((num) => (
+					<Link to={`/generation/${num}/`} key={num}>
+						<div>Generation {num}</div>
+					</Link>
+				))}
+			</div>
+
 			<Routes>
 				<Route path="/all/" element={<All data={pokemonData} />}></Route>
 				<Route
 					path="/all/:id"
 					element={<IndividualPage data={pokemonData} />}
 				></Route>
+				<Route path="/generation/:id" element={<Generation />}></Route>
 			</Routes>
 		</>
 	);
 }
 
 export default App;
+
+function Generation() {
+	const { id } = useParams();
+	return <div>Generation {id} gen</div>;
+}
 
 function Loading() {
 	return (
