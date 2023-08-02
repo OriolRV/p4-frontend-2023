@@ -9,6 +9,9 @@ import {
 	useNavigate,
 	useParams,
 } from "react-router-dom";
+import { Radar } from "react-chartjs-2";
+import { Chart, RadialLinearScale, PointElement, LineElement } from "chart.js";
+Chart.register(RadialLinearScale, PointElement, LineElement);
 
 function App() {
 	const [pokemonData, setPokemonData] = useState<Pokemon[] | null>(null);
@@ -99,12 +102,43 @@ function IndividualPage({ data }: { data: Pokemon[] }) {
 		return <div>Pokemon not found</div>;
 	}
 
+	const plotData = {
+		labels: ["HP", "Attack", "Defense", "Sp. Attack", "Sp. Defense", "Speed"],
+		datasets: [
+			{
+				label: "This pokemon's base stats",
+				data: pokemon.stats,
+				fill: true,
+				backgroundColor: "rgba(255, 99, 132, 0.2)",
+				borderColor: "rgb(255, 99, 132)",
+				pointBackgroundColor: "rgb(255, 99, 132)",
+				pointBorderColor: "#fff",
+			},
+		],
+	};
+
+	const plotOptions = {
+		scales: {
+			r: {
+				beginAtZero: true,
+			},
+		},
+	};
+
 	return (
 		<>
-			<div>
+			<div className="upperSection">
 				<h1>{pokemon.name}</h1>
 				<img src={pokemon.picture} alt={pokemon.name} />
 				<div>ID: {pokemon.id}</div>
+				<p>{pokemon.types}</p>
+			</div>
+			<div className="middleSection">
+				<p>{pokemon.abilities}</p>
+				<p>{pokemon.moves}</p>
+			</div>
+			<div className="bottomSection">
+				<Radar data={plotData} options={plotOptions} />
 			</div>
 		</>
 	);
