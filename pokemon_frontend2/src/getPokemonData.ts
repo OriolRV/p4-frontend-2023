@@ -66,8 +66,8 @@ export const getPokemon = async (n: number) => {
 				capitalizeFirstLetter(name),
 				id,
 				picture,
-				typeNames.join(" "),
-				abilityNames.join(" "),
+				typeNames,
+				abilityNames,
 				movesNames,
 				statsNumbers
 			)

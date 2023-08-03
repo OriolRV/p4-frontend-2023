@@ -131,7 +131,9 @@ function IndividualPage({ data }: { data: Pokemon[] }) {
 				<h1>{pokemon.name}</h1>
 				<img src={pokemon.picture} alt={pokemon.name} />
 				<div>ID: {pokemon.id}</div>
-				<p>{pokemon.types}</p>
+				{pokemon.types.map((type: string) => (
+					<p style={{ background: typeColours[type] }}>{type}</p>
+				))}
 			</div>
 			<div className="middleSection">
 				<p>{pokemon.abilities}</p>
@@ -143,3 +145,28 @@ function IndividualPage({ data }: { data: Pokemon[] }) {
 		</>
 	);
 }
+
+type TypeColours = {
+	[key: string]: string;
+};
+
+const typeColours: TypeColours = {
+	Normal: "#A8A77A",
+	Fire: "#EE8130",
+	Water: "#6390F0",
+	Electric: "#F7D02C",
+	Grass: "#7AC74C",
+	Ice: "#96D9D6",
+	Fighting: "#C22E28",
+	Poison: "#A33EA1",
+	Ground: "#E2BF65",
+	Flying: "#A98FF3",
+	Psychic: "#F95587",
+	Bug: "#A6B91A",
+	Rock: "#B6A136",
+	Ghost: "#735797",
+	Dragon: "#6F35FC",
+	Dark: "#705746",
+	Steel: "#B7B7CE",
+	Fairy: "#D685AD",
+};
