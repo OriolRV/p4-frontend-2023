@@ -15,7 +15,7 @@ import { generations, typeColours } from "./variablesAndTypes";
 Chart.register(RadialLinearScale, PointElement, LineElement);
 
 function App() {
-	const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
+	const [pokemonData, setPokemonData] = useState<Pokemon[] | null>(null);
 	const [filteredPokemonData, setFilteredPokemonData] = useState<Pokemon[]>([]);
 	const [selectedGeneration, setSelectedGeneration] = useState<number | null>(
 		null
@@ -23,7 +23,7 @@ function App() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		getPokemon(20).then((pokemonData) => {
+		getPokemon().then((pokemonData) => {
 			setPokemonData(pokemonData);
 			navigate("/all");
 		});
@@ -40,6 +40,7 @@ function App() {
 			} else {
 				setFilteredPokemonData(pokemonData);
 			}
+		} else {
 		}
 	}, [pokemonData, selectedGeneration]);
 
@@ -47,7 +48,7 @@ function App() {
 		setSelectedGeneration(generation);
 	};
 
-	if (filteredPokemonData === null) {
+	if (pokemonData === null) {
 		return (
 			<Routes>
 				<Route path="/" element={<Loading />} />
