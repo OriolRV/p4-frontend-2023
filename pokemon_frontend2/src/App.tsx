@@ -14,7 +14,11 @@ import { Chart, RadialLinearScale, PointElement, LineElement } from "chart.js";
 Chart.register(RadialLinearScale, PointElement, LineElement);
 
 function App() {
-	const [pokemonData, setPokemonData] = useState<Pokemon[] | null>(null);
+	const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
+	const [filteredPokemonData, setFilteredPokemonData] = useState<Pokemon[]>([]);
+	const [selectedGeneration, setSelectedGeneration] = useState<number | null>(
+		null
+	);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -24,7 +28,25 @@ function App() {
 		});
 	}, []);
 
-	if (pokemonData === null) {
+	useEffect(() => {
+		if (pokemonData !== null) {
+			if (selectedGeneration !== null) {
+				const [minId, maxId] = generations[selectedGeneration];
+				const filteredData = pokemonData.filter(
+					(pokemon) => pokemon.id >= minId && pokemon.id <= maxId
+				);
+				setFilteredPokemonData(filteredData);
+			} else {
+				setFilteredPokemonData(pokemonData);
+			}
+		}
+	}, [pokemonData, selectedGeneration]);
+
+	const handleGenerationClick = (generation: number | null) => {
+		setSelectedGeneration(generation);
+	};
+
+	if (filteredPokemonData === null) {
 		return (
 			<Routes>
 				<Route path="/" element={<Loading />} />
@@ -35,7 +57,13 @@ function App() {
 	return (
 		<>
 			<div className="navigation">
-				{Array.from({ length: 8 }, (_, index) => index + 1).map((num) => (
+				<Link to={`/all/`}>
+					<button onClick={() => handleGenerationClick(null)}>
+						All Generations
+					</button>
+				</Link>
+
+				{Array.from({ length: 9 }, (_, index) => index + 1).map((num) => (
 					<Link to={`/generation/${num}/`} key={num}>
 						<div>Generation {num}</div>
 					</Link>
@@ -48,7 +76,10 @@ function App() {
 					path="/all/:id"
 					element={<IndividualPage data={pokemonData} />}
 				></Route>
-				<Route path="/generation/:id" element={<Generation />}></Route>
+				<Route
+					path="/generation/:id"
+					element={<Generation filteredData={filteredPokemonData} />}
+				></Route>
 			</Routes>
 		</>
 	);
@@ -56,9 +87,32 @@ function App() {
 
 export default App;
 
-function Generation() {
-	const { id } = useParams();
-	return <div>Generation {id} gen</div>;
+function Generation({ filteredData }: { filteredData: Pokemon[] }) {
+	const { id } = useParams<{ id: string }>();
+
+	if (id === undefined) {
+		return <div>Invalid generation ID</div>;
+	} else {
+		const generationRange = generations[id];
+		const filteredGenerationData = filteredData.filter(
+			(pokemon) =>
+				pokemon.id >= generationRange[0] && pokemon.id <= generationRange[1]
+		);
+
+		return (
+			<div>
+				{filteredGenerationData.map((pokemon) => (
+					<Link to={`/all/${pokemon.id}`} key={pokemon.id}>
+						<div className="bubble">
+							<div>{pokemon.name}</div>
+							<img src={pokemon.picture} alt={pokemon.name} />
+							<div>{pokemon.id}</div>
+						</div>
+					</Link>
+				))}
+			</div>
+		);
+	}
 }
 
 function Loading() {
@@ -169,4 +223,20 @@ const typeColours: TypeColours = {
 	Dark: "#705746",
 	Steel: "#B7B7CE",
 	Fairy: "#D685AD",
+};
+
+type Generations = {
+	[key: string]: Array<number>;
+};
+
+const generations: Generations = {
+	"1": [1, 151],
+	"2": [152, 251],
+	"3": [252, 386],
+	"4": [387, 493],
+	"5": [494, 694],
+	"6": [650, 721],
+	"7": [722, 809],
+	"8": [810, 905],
+	"9": [906, 1010],
 };
