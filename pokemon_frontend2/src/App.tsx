@@ -89,34 +89,6 @@ function App() {
 
 export default App;
 
-function Generation({ filteredData }: { filteredData: Pokemon[] }) {
-	const { id } = useParams<{ id: string }>();
-
-	if (id === undefined) {
-		return <div>Invalid generation ID</div>;
-	} else {
-		const generationRange = generations[id];
-		const filteredGenerationData = filteredData.filter(
-			(pokemon) =>
-				pokemon.id >= generationRange[0] && pokemon.id <= generationRange[1]
-		);
-
-		return (
-			<div>
-				{filteredGenerationData.map((pokemon) => (
-					<Link to={`/all/${pokemon.id}`} key={pokemon.id}>
-						<div className="bubble">
-							<div>{pokemon.name}</div>
-							<img src={pokemon.picture} alt={pokemon.name} />
-							<div>{pokemon.id}</div>
-						</div>
-					</Link>
-				))}
-			</div>
-		);
-	}
-}
-
 function Loading() {
 	return (
 		<>
@@ -130,11 +102,23 @@ function Loading() {
 	);
 }
 
-function All({ data }: { data: Pokemon[] }) {
+function PokemonList({
+	data,
+	generationRange,
+}: {
+	data: Pokemon[];
+	generationRange?: number[];
+}) {
 	return (
-		<>
-			<div className="mainPage">
-				{data.map((pokemon) => (
+		<div className="mainPage">
+			{data
+				.filter(
+					(pokemon) =>
+						!generationRange ||
+						(pokemon.id >= generationRange[0] &&
+							pokemon.id <= generationRange[1])
+				)
+				.map((pokemon) => (
 					<Link to={`/all/${pokemon.id}`} key={pokemon.id}>
 						<div className="bubble">
 							<div>{pokemon.name}</div>
@@ -143,7 +127,35 @@ function All({ data }: { data: Pokemon[] }) {
 						</div>
 					</Link>
 				))}
-			</div>
+		</div>
+	);
+}
+
+function Generation({ filteredData }: { filteredData: Pokemon[] }) {
+	const { id } = useParams<{ id: string }>();
+
+	if (id === undefined) {
+		return <div>Invalid generation ID</div>;
+	} else {
+		const generationRange = generations[id];
+		const filteredGenerationData = filteredData.filter(
+			(pokemon) =>
+				pokemon.id >= generationRange[0] && pokemon.id <= generationRange[1]
+		);
+
+		return (
+			<PokemonList
+				data={filteredGenerationData}
+				generationRange={generationRange}
+			/>
+		);
+	}
+}
+
+function All({ data }: { data: Pokemon[] }) {
+	return (
+		<>
+			<PokemonList data={data} />
 			<Outlet />
 		</>
 	);
