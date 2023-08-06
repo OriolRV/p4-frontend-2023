@@ -10,9 +10,15 @@ import {
 	useParams,
 } from "react-router-dom";
 import { Radar } from "react-chartjs-2";
-import { Chart, RadialLinearScale, PointElement, LineElement } from "chart.js";
+import {
+	Chart,
+	RadialLinearScale,
+	PointElement,
+	LineElement,
+	Filler,
+} from "chart.js";
 import { generations, typeColours } from "./variablesAndTypes";
-Chart.register(RadialLinearScale, PointElement, LineElement);
+Chart.register(RadialLinearScale, PointElement, LineElement, Filler);
 
 function App() {
 	const [pokemonData, setPokemonData] = useState<Pokemon[] | null>(null);
@@ -44,10 +50,6 @@ function App() {
 		}
 	}, [pokemonData, selectedGeneration]);
 
-	const handleGenerationClick = (generation: number | null) => {
-		setSelectedGeneration(generation);
-	};
-
 	if (pokemonData === null) {
 		return (
 			<Routes>
@@ -59,12 +61,7 @@ function App() {
 	return (
 		<>
 			<div className="navigation">
-				<Link to={`/all/`}>
-					<button onClick={() => handleGenerationClick(null)}>
-						All Generations
-					</button>
-				</Link>
-
+				<Link to={`/all/`}>All Generations</Link>
 				{Array.from({ length: 9 }, (_, index) => index + 1).map((num) => (
 					<Link to={`/generation/${num}/`} key={num}>
 						<div>Generation {num}</div>
@@ -123,11 +120,20 @@ function PokemonList({
 						<div className="bubble">
 							<div>{pokemon.name}</div>
 							<img src={pokemon.picture} alt={pokemon.name} />
-							<div>{pokemon.id}</div>
+							<div>#{pokemon.id}</div>
 						</div>
 					</Link>
 				))}
 		</div>
+	);
+}
+
+function All({ data }: { data: Pokemon[] }) {
+	return (
+		<>
+			<PokemonList data={data} />
+			<Outlet />
+		</>
 	);
 }
 
@@ -150,15 +156,6 @@ function Generation({ filteredData }: { filteredData: Pokemon[] }) {
 			/>
 		);
 	}
-}
-
-function All({ data }: { data: Pokemon[] }) {
-	return (
-		<>
-			<PokemonList data={data} />
-			<Outlet />
-		</>
-	);
 }
 
 function IndividualPage({ data }: { data: Pokemon[] }) {
@@ -196,16 +193,41 @@ function IndividualPage({ data }: { data: Pokemon[] }) {
 	return (
 		<>
 			<div className="upperSection">
-				<h1>{pokemon.name}</h1>
-				<img src={pokemon.picture} alt={pokemon.name} />
-				<div>ID: {pokemon.id}</div>
-				{pokemon.types.map((type: string) => (
-					<p style={{ background: typeColours[type] }}>{type}</p>
-				))}
+				<div className="upperSectionLeft">
+					<h1>
+						#{pokemon.id} {pokemon.name}
+					</h1>
+					<div className="types">
+						{pokemon.types.map((type: string, index: number) => (
+							<p
+								className="type"
+								style={{ background: typeColours[type] }}
+								key={index}
+							>
+								{type}
+							</p>
+						))}
+					</div>
+					<div className="abilities">
+						{pokemon.abilities.map((ability: string, index: number) => (
+							<p className="ability" key={index}>
+								{ability.replace(/-/g, " ")}
+							</p>
+						))}
+					</div>
+				</div>
+				<div className="upperSectionRight">
+					<img src={pokemon.picture} alt={pokemon.name} />
+				</div>
 			</div>
 			<div className="middleSection">
-				<p>{pokemon.abilities}</p>
-				<p>{pokemon.moves}</p>
+				<div className="moves">
+					{pokemon.moves.map((move: string, index: number) => (
+						<p className="move" key={index}>
+							{move.replace(/-/g, " ")}
+						</p>
+					))}
+				</div>
 			</div>
 			<div className="bottomSection">
 				<Radar data={plotData} options={plotOptions} />
