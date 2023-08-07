@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import "./App.css";
-import { Pokemon, getPokemon } from "./functions";
 import {
 	Routes,
 	Route,
@@ -17,15 +15,13 @@ import {
 	LineElement,
 	Filler,
 } from "chart.js";
+import "./App.css";
+import { Pokemon, getPokemon } from "./functions";
 import { generations, typeColours } from "./variablesAndTypes";
 Chart.register(RadialLinearScale, PointElement, LineElement, Filler);
 
 function App() {
 	const [pokemonData, setPokemonData] = useState<Pokemon[] | null>(null);
-	const [filteredPokemonData, setFilteredPokemonData] = useState<Pokemon[]>([]);
-	const [selectedGeneration, setSelectedGeneration] = useState<number | null>(
-		null
-	);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -34,21 +30,6 @@ function App() {
 			navigate("/all");
 		});
 	}, []);
-
-	useEffect(() => {
-		if (pokemonData !== null) {
-			if (selectedGeneration !== null) {
-				const [minId, maxId] = generations[selectedGeneration];
-				const filteredData = pokemonData.filter(
-					(pokemon) => pokemon.id >= minId && pokemon.id <= maxId
-				);
-				setFilteredPokemonData(filteredData);
-			} else {
-				setFilteredPokemonData(pokemonData);
-			}
-		} else {
-		}
-	}, [pokemonData, selectedGeneration]);
 
 	if (pokemonData === null) {
 		return (
@@ -77,7 +58,7 @@ function App() {
 				></Route>
 				<Route
 					path="/generation/:id"
-					element={<Generation filteredData={filteredPokemonData} />}
+					element={<Generation data={pokemonData} />}
 				></Route>
 			</Routes>
 		</>
@@ -89,7 +70,7 @@ export default App;
 function Loading() {
 	return (
 		<>
-			<p>Retrieving data...</p>
+			<h1>Retrieving data...</h1>
 			<img
 				className="spinningPokeball"
 				src="../public/assets/Poké_Ball_icon.svg.png"
@@ -97,6 +78,36 @@ function Loading() {
 			></img>
 		</>
 	);
+}
+
+function All({ data }: { data: Pokemon[] }) {
+	return (
+		<>
+			<PokemonList data={data} />
+			<Outlet />
+		</>
+	);
+}
+
+function Generation({ data }: { data: Pokemon[] }) {
+	const { id } = useParams<{ id: string }>();
+
+	if (id === undefined) {
+		return <div>Invalid generation ID</div>;
+	} else {
+		const generationRange = generations[id];
+		const filteredGenerationData = data.filter(
+			(pokemon) =>
+				pokemon.id >= generationRange[0] && pokemon.id <= generationRange[1]
+		);
+
+		return (
+			<PokemonList
+				data={filteredGenerationData}
+				generationRange={generationRange}
+			/>
+		);
+	}
 }
 
 function PokemonList({
@@ -126,36 +137,6 @@ function PokemonList({
 				))}
 		</div>
 	);
-}
-
-function All({ data }: { data: Pokemon[] }) {
-	return (
-		<>
-			<PokemonList data={data} />
-			<Outlet />
-		</>
-	);
-}
-
-function Generation({ filteredData }: { filteredData: Pokemon[] }) {
-	const { id } = useParams<{ id: string }>();
-
-	if (id === undefined) {
-		return <div>Invalid generation ID</div>;
-	} else {
-		const generationRange = generations[id];
-		const filteredGenerationData = filteredData.filter(
-			(pokemon) =>
-				pokemon.id >= generationRange[0] && pokemon.id <= generationRange[1]
-		);
-
-		return (
-			<PokemonList
-				data={filteredGenerationData}
-				generationRange={generationRange}
-			/>
-		);
-	}
 }
 
 function IndividualPage({ data }: { data: Pokemon[] }) {
