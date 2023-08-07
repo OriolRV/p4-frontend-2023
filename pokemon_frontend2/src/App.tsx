@@ -202,6 +202,7 @@ function IndividualPage({ data }: { data: Pokemon[] }) {
 				</div>
 			</div>
 			<div className="middleSection">
+				<h1>Moves</h1>
 				<div className="moves">
 					{pokemon.moves.map((move: string, index: number) => (
 						<p className="move" key={index}>
@@ -211,6 +212,7 @@ function IndividualPage({ data }: { data: Pokemon[] }) {
 				</div>
 			</div>
 			<div className="bottomSection">
+				<h1>Base stats</h1>
 				<Radar data={plotData} options={plotOptions} />
 			</div>
 		</>
